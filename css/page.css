@@ -1,0 +1,101 @@
+/* ======================================================
+   Show Pages— Page Settings → Custom CSS
+   ======================================================
+   Breakpoints match Additional CSS: 768 and 480.
+   Everything scoped to .exhibition — a bare `p` rule here
+   reaches the footer.
+   Space ABOVE the h1 is deliberately not set here. It is
+   --h1-space in Additional CSS, and on mobile that value
+   is what holds the title clear of the floating hamburger.
+   ====================================================== */
+
+.exhibition .wpb_text_column { margin-top: 5rem; margin-bottom: 0; }
+.exhibition h1,
+.exhibition h3,
+.exhibition p { margin: 0; }
+
+.exhibition .venue { margin-top: 1.5rem; }
+.exhibition .dates { margin-top: 0.25rem; }
+.exhibition .label { margin-top: 2.5rem; }
+.exhibition .doc   { margin-top: 0.25rem; }
+.exhibition .gallery-block { margin-top: 4rem; }
+
+
+
+/* .foogallery already carries padding-bottom: 10rem from
+   Additional CSS. Do NOT add padding-bottom here. */
+
+/* H1 size needs .qodef-content + !important to outrank the
+   global steps — a bare `h1` selector loses to them. */
+.qodef-content .exhibition h1 { font-size: 2.75rem !important; }
+
+.exhibition .venue,
+.exhibition .dates { font-size: 1.25rem; font-weight: 400;}
+
+.exhibition .label,
+.exhibition .doc   { font-size: 1rem;}
+
+.exhibition .label { color: rgba(14,14,14); font-weight: 400;}
+
+.exhibition .doc {color: rgba(14,14,14,.57) !important;}
+
+/* ---- Links: venue + documents --------------------
+   Underline is always declared but transparent, so the
+   hover can transition — text-decoration: none → underline
+   is not animatable, it would snap.
+   1px, not rem: a hairline shouldn't scale with type. */
+.exhibition .venue a,
+.exhibition .doc a {
+  /*color: #0e0e0e;*/
+  text-decoration: underline;
+  text-decoration-thickness: .5px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.15s ease;
+  
+}
+
+.exhibition .venue a:hover,
+.exhibition .doc a:hover,
+.exhibition .venue a:focus-visible,
+.exhibition .doc a:focus-visible {
+  text-decoration-color: currentColor;
+  background-color: rgba(0, 249, 254, .10);
+}
+
+
+/* No hover on touch, so the hairline is permanent there
+   or the link is unmarked. Most of her traffic is phones. */
+@media (hover: none) {
+  .exhibition .venue a,
+  .exhibition .doc a {
+    text-decoration-color: rgba(14, 14, 14, 0.35);
+    
+  }
+}
+
+@media (max-width: 768px) {
+  .qodef-content .exhibition h1 { font-size: 2rem !important; }
+  .exhibition .venue,
+  .exhibition .dates { font-size: 1.25rem; }
+  .exhibition .label,
+  .exhibition .doc   { font-size: 1rem; }
+
+  .exhibition .venue         { margin-top: 1.25rem; }
+  .exhibition .label         { margin-top: 2rem; }
+  .exhibition .gallery-block { margin-top: 3rem; }
+  .exhibition .foogallery    { padding-bottom: 6rem !important; }
+}
+
+@media (max-width: 480px) {
+  .qodef-content .exhibition h1 { font-size: 1.625rem !important; }
+  .exhibition .venue,
+  .exhibition .dates { font-size: 1rem; }
+  .exhibition .label,
+  .exhibition .doc   { font-size: 0.9rem; }
+
+  .exhibition .venue         { margin-top: 1rem; }
+  .exhibition .label         { margin-top: 1.75rem; }
+  .exhibition .gallery-block { margin-top: 2.5rem; }
+  .exhibition .foogallery    { padding-bottom: 4rem !important; }
+}

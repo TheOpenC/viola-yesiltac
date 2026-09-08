@@ -1,0 +1,1529 @@
+/* ======================================================
+   VIOLA YESILTAC — ADDITIONAL CSS
+   Appearance → Customize → Additional CSS
+   Replaces everything currently in that box.
+   ======================================================
+
+   WHAT CHANGED vs. your previous version — four things:
+
+   1. HAMBURGER 1.5x. Changed IN PLACE, not appended: the
+      mobile-opener font-size in the MOBILE BAR block went
+      2rem → 3rem (32px → 48px). It is edited there rather
+      than overridden at the bottom so there is only ever
+      one number to find.
+
+   2. MOBILE LOGO → HER NAME. New block at the end.
+
+   3. NAV STAYS BLACK. New block at the end.
+
+   4. FLOATING BAR PINNED. New block at the end — the bar
+      stays put while scrolling, and gets out of the way
+      when the lightbox opens.
+
+   Everything else is byte-for-byte your file.
+   ====================================================== */
+   
+   /* Work Sans Font and Venue Arrow */
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&family=Poppins:wght@400;500;600&family=Work+Sans:wght@400;500&display=swap');
+
+
+
+
+/* ===================================== */
+/* Page Styling for each exhibition page */
+/* ===================================== */
+
+body {
+    font-family: "Work Sans", sans-serif;
+}
+h1,
+h2,
+h3{
+    font-family: "Poppins", sans-serif;
+}
+/* ======================================================
+   Show Pages— Page Settings → Custom CSS
+   ======================================================
+   Breakpoints match Additional CSS: 768 and 480.
+   Everything scoped to .exhibition — a bare `p` rule here
+   reaches the footer.
+   Space ABOVE the h1 is deliberately not set here. It is
+   --h1-space in Additional CSS, and on mobile that value
+   is what holds the title clear of the floating hamburger.
+   ====================================================== */
+
+.exhibition .wpb_text_column { margin-top: 5rem; margin-bottom: 0; }
+.exhibition h1,
+.exhibition h3,
+.exhibition p { margin: 0; }
+
+.exhibition .venue { margin-top: 1.5rem; }
+.exhibition .dates { margin-top: 0.25rem; }
+.exhibition .label { margin-top: 2.5rem; }
+.exhibition .doc   { margin-top: 0.25rem; }
+.exhibition .gallery-block { margin-top: 4rem; }
+
+
+
+/* .foogallery already carries padding-bottom: 10rem from
+   Additional CSS. Do NOT add padding-bottom here. */
+
+/* H1 size needs .qodef-content + !important to outrank the
+   global steps — a bare `h1` selector loses to them. */
+.qodef-content .exhibition h1 { font-size: 2.75rem !important; }
+
+.exhibition .venue,
+.exhibition .dates { font-size: 1.25rem; font-weight: 400;}
+
+.exhibition .label,
+.exhibition .doc   { font-size: 1rem;}
+
+.exhibition .label { color: rgba(14,14,14) !important; font-weight: 400 !important;}
+
+.exhibition .doc a{color: rgba(14,14,14,.57) !important;}
+
+/* ---- Links: venue + documents --------------------
+   Underline is always declared but transparent, so the
+   hover can transition — text-decoration: none → underline
+   is not animatable, it would snap.
+   1px, not rem: a hairline shouldn't scale with type. */
+.exhibition .venue a,
+.exhibition .doc a {
+  /**/
+  text-decoration: underline;
+  text-decoration-thickness: .5px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.15s ease;
+  
+}
+
+/* Arrow Styling */
+.exhibition .venue a:not(.unavailable)::after {
+  content: "arrow_outward";
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 1em;
+  line-height: 1;
+  display: inline-block;
+  margin-left: 0.25em;
+  vertical-align: -0.08em;
+
+  
+
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+.exhibition .venue a:hover,
+.exhibition .doc a:hover,
+.exhibition .venue a:focus-visible,
+.exhibition .doc a:focus-visible {
+  text-decoration-color: currentColor;
+	color: #0e0e0e !important;
+  background-color: rgba(0, 249, 254, .10);
+}
+
+/* Gives Exhibitions gallery thumbnail cards space and breathing room */
+#foogallery-gallery-99 .fg-item-inner {
+  margin-bottom: 2rem !important;
+}
+
+/* ---- Unavailable venue: dark, but no link behavior ---- */
+.exhibition .venue a.unavailable,
+.exhibition .venue a.unavailable:hover,
+.exhibition .venue a.unavailable:focus,
+.exhibition .venue a.unavailable:focus-visible,
+.exhibition .venue a.unavailable:active {
+  color: #0e0e0e !important;
+  background-color: transparent !important;
+  text-decoration-color: transparent !important;
+  cursor: default !important;
+  pointer-events: none;
+}
+
+
+/* ---- Unavailable document: grey, no link behavior ---- */
+.exhibition .doc a.unavailable,
+.exhibition .doc a.unavailable:hover,
+.exhibition .doc a.unavailable:focus,
+.exhibition .doc a.unavailable:focus-visible,
+.exhibition .doc a.unavailable:active {
+  color: rgba(14, 14, 14, .57) !important;
+  background-color: transparent !important;
+  text-decoration-color: transparent !important;
+  cursor: default !important;
+  pointer-events: none;
+}
+
+
+/* No hover on touch, so the hairline is permanent there
+   or the link is unmarked. Most of her traffic is phones. */
+@media (hover: none) {
+  .exhibition .venue a,
+  .exhibition .doc a {
+    text-decoration-color: rgba(14, 14, 14, 0.35);
+    
+  }
+}
+
+@media (max-width: 768px) {
+  .qodef-content .exhibition h1 { font-size: 2rem !important; }
+  .exhibition .venue,
+  .exhibition .dates { font-size: 1.25rem; }
+  .exhibition .label,
+  .exhibition .doc   { font-size: 1rem; }
+
+  .exhibition .venue         { margin-top: 1.25rem; }
+  .exhibition .label         { margin-top: 2rem; }
+  .exhibition .gallery-block { margin-top: 3rem; }
+  .exhibition .foogallery    { padding-bottom: 6rem !important; }
+}
+
+@media (max-width: 480px) {
+  .qodef-content .exhibition h1 { font-size: 1.625rem !important; }
+  .exhibition .venue,
+  .exhibition .dates { font-size: 1rem; }
+  .exhibition .label,
+  .exhibition .doc   { font-size: 0.9rem; }
+
+  .exhibition .venue         { margin-top: 1rem; }
+  .exhibition .label         { margin-top: 1.75rem; }
+  .exhibition .gallery-block { margin-top: 2.5rem; }
+  .exhibition .foogallery    { padding-bottom: 4rem !important; }
+}
+
+/* Embeded audio player on Bastard Pears and Barricades */
+/* ======================================================
+   EXHIBITION MEDIA — MINIMAL AUDIO CONTROL
+   ====================================================== */
+
+/* ======================================================
+   EXHIBITION MEDIA — MINIMAL SOUNDCLOUD CONTROL
+   Uses the existing .label + .doc spacing system.
+   NO vertical margins are introduced here.
+   ====================================================== */
+
+
+/* The containing paragraph behaves exactly like every
+   other .doc line on the exhibition page. */
+
+.exhibition .exhibition-media {
+  color: rgba(14, 14, 14, .57) !important;
+}
+
+
+/* ---------------------------------------
+   Player — one inline line of document UI
+   --------------------------------------- */
+
+.exhibition .exhibition-audio {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+
+  width: 22rem;
+  max-width: 100%;
+
+  margin: 0;
+  padding: 0;
+
+  color: inherit;
+  font: inherit;
+  line-height: 1;
+
+  vertical-align: middle;
+}
+
+
+/* ---------------------------------------
+   SoundCloud playback engine
+   Completely removed from visible layout.
+   --------------------------------------- */
+
+.exhibition .exhibition-audio__engine {
+  position: absolute !important;
+
+  width: 1px !important;
+  height: 1px !important;
+
+  left: 0 !important;
+  top: 0 !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  border: 0 !important;
+
+  opacity: 0 !important;
+
+  clip-path: inset(50%) !important;
+  overflow: hidden !important;
+
+  pointer-events: none !important;
+}
+
+
+/* ---------------------------------------
+   Play / pause button
+   --------------------------------------- */
+
+.exhibition .exhibition-audio__toggle {
+  appearance: none;
+  -webkit-appearance: none;
+
+  flex: 0 0 auto;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 0.8rem;
+  height: 0.9rem;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  border: 0 !important;
+  background: transparent !important;
+
+  color: inherit !important;
+
+  cursor: pointer;
+  box-shadow: none !important;
+}
+
+
+/* Kill theme button styling */
+
+.exhibition .exhibition-audio__toggle:hover,
+.exhibition .exhibition-audio__toggle:focus,
+.exhibition .exhibition-audio__toggle:focus-visible,
+.exhibition .exhibition-audio__toggle:active {
+  margin: 0 !important;
+  padding: 0 !important;
+
+  border: 0 !important;
+  background: transparent !important;
+
+  color: inherit !important;
+
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+
+/* ---------------------------------------
+   Icon
+   --------------------------------------- */
+
+.exhibition .exhibition-audio__icon {
+  position: relative;
+
+  display: block;
+
+  width: 0.65rem;
+  height: 0.75rem;
+}
+
+
+/* Play triangle */
+
+.exhibition
+.exhibition-audio:not(.is-playing)
+.exhibition-audio__icon::before {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  width: 0;
+  height: 0;
+
+  border-top: 0.375rem solid transparent;
+  border-bottom: 0.375rem solid transparent;
+  border-left: 0.55rem solid currentColor;
+}
+
+
+/* Pause bars */
+
+.exhibition
+.exhibition-audio.is-playing
+.exhibition-audio__icon::before,
+.exhibition
+.exhibition-audio.is-playing
+.exhibition-audio__icon::after {
+  content: "";
+
+  position: absolute;
+  top: 0;
+
+  width: 0.14rem;
+  height: 0.75rem;
+
+  background: currentColor;
+}
+
+.exhibition
+.exhibition-audio.is-playing
+.exhibition-audio__icon::before {
+  left: 0;
+}
+
+.exhibition
+.exhibition-audio.is-playing
+.exhibition-audio__icon::after {
+  left: 0.34rem;
+}
+
+
+/* ---------------------------------------
+   Scrubber
+   --------------------------------------- */
+
+.exhibition .exhibition-audio__seek {
+  --progress: 0%;
+
+  flex: 1 1 auto;
+  min-width: 4rem;
+
+  width: auto;
+  height: 12px;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  appearance: none;
+  -webkit-appearance: none;
+
+  border: 0;
+  background: transparent;
+
+  cursor: pointer;
+}
+
+
+/* Chrome / Safari */
+
+.exhibition
+.exhibition-audio__seek::-webkit-slider-runnable-track {
+  height: 1px;
+
+  background:
+    linear-gradient(
+      to right,
+      currentColor 0%,
+      currentColor var(--progress),
+      rgba(14, 14, 14, .18) var(--progress),
+      rgba(14, 14, 14, .18) 100%
+    );
+}
+
+.exhibition
+.exhibition-audio__seek::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+
+  width: 5px;
+  height: 5px;
+
+  margin-top: -2px;
+
+  border: 0;
+  border-radius: 0;
+
+  background: currentColor;
+}
+
+
+/* Firefox */
+
+.exhibition
+.exhibition-audio__seek::-moz-range-track {
+  height: 1px;
+
+  border: 0;
+  background: rgba(14, 14, 14, .18);
+}
+
+.exhibition
+.exhibition-audio__seek::-moz-range-progress {
+  height: 1px;
+
+  background: currentColor;
+}
+
+.exhibition
+.exhibition-audio__seek::-moz-range-thumb {
+  width: 5px;
+  height: 5px;
+
+  border: 0;
+  border-radius: 0;
+
+  background: currentColor;
+}
+
+
+/* ---------------------------------------
+   Time
+   --------------------------------------- */
+
+.exhibition .exhibition-audio__time {
+  flex: 0 0 auto;
+
+  margin: 0;
+  padding: 0;
+
+  color: inherit;
+
+  font-size: 0.8em;
+  line-height: 1;
+
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ======================================================
+   EXHIBITION METADATA — ENFORCE EXISTING SPACING SYSTEM
+   ====================================================== */
+
+.exhibition p.label {
+  margin: 2.5rem 0 0 0 !important;
+}
+
+.exhibition p.doc {
+  margin: 0.25rem 0 0 0 !important;
+}
+
+/* WPBakery must not add blank paragraph spacing
+   inside the metadata text block */
+.exhibition .wpb_text_column:not(.gallery-block) > p:empty {
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+
+/* ======================================================
+   VIOLA — HOMEPAGE INTRO VIDEO
+====================================================== */
+#viola-site-intro-video {
+    cursor: pointer;
+}
+#viola-site-intro {
+    position: fixed !important;
+    /*
+     * JS controls exact top/left/width/height using
+     * window.visualViewport.
+     *
+     * Do NOT use 100vh / 100dvh for this element.
+     */
+    right: auto !important;
+    bottom: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    z-index: 2147483647 !important;
+    overflow: hidden !important;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    background: #08e8ef !important;
+    transform: none !important;
+    box-sizing: border-box !important;
+}
+/* ======================================================
+   ACTIVE
+====================================================== */
+#viola-site-intro.is-active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+/* ======================================================
+   ARTIFACTED AMBIENT BACKGROUND
+====================================================== */
+#viola-intro-ambient {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+    z-index: 0;
+    pointer-events: none;
+    filter:
+        blur(1.5px)
+        saturate(1.02)
+        contrast(1.01);
+    transform: scale(1.015);
+    transform-origin: center;
+}
+/* ======================================================
+   REAL VIDEO + NATIVE POSTER
+====================================================== */
+#viola-site-intro-video {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    display: block;
+    z-index: 1;
+    /*
+     * Entire 16:9 video always remains visible.
+     */
+    object-fit: contain !important;
+    object-position: center center !important;
+    background: transparent !important;
+    border: 0 !important;
+    outline: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+}
+/* ======================================================
+   FINAL DISSOLVE
+====================================================== */
+#viola-site-intro.is-leaving {
+    opacity: 0;
+    transition:
+        opacity 1000ms ease-in-out;
+    pointer-events: none;
+}
+/* ======================================================
+   SCROLL LOCK
+====================================================== */
+html.viola-intro-playing,
+html.viola-intro-playing body {
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+    transform: none !important;
+}
+/* Firefox */
+html.viola-intro-playing {
+    scrollbar-width: none !important;
+}
+/* Safari / Chrome */
+html.viola-intro-playing::-webkit-scrollbar,
+html.viola-intro-playing body::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+    display: none !important;
+}
+/*======================
+End of video intro
+=========================*/
+.page-id-26 .qodef-content-inner > .qodef-container > .qodef-container-inner  {
+	padding-top: 0 !important;
+	padding-bottom: 0 !important;
+}
+
+/* ======================================================
+   EVERY PAGE BEHAVES LIKE EXHIBITIONS
+   ======================================================
+   Audited all 16 pages. The header is already identical
+   everywhere — same markup, same body classes, and every
+   header rule in this file is global, so the nav and the
+   mobile bar behave the same site-wide. Verified on Die
+   Landvermesserin II: bar at 16px at rest, at scroll 800,
+   at scroll 2000, and back. Nothing needed there.
+
+   ONE page-level difference did exist. The theme puts
+   padding-top on .qodef-container-inner on most pages —
+   44px on the gallery pages — but not on Exhibitions. So
+   the same --h1-space produced a heading 44px lower on
+   every page except the one you were judging by.
+
+   Zeroed site-wide, which makes --h1-space the single
+   control for top spacing on every page. Measured after:
+   Die Landvermesserin II now reports h1 at 111.5px and a
+   48px gap under her name — identical to Exhibitions. */
+.qodef-content-inner .qodef-container-inner {
+	padding-top: 0 !important;
+}
+.qodef-page-header {
+	background-color: transparent;
+}
+.qodef-menu-area {
+	background-color: transparent !important;
+}
+.qodef-logo-wrapper { display: none !important; }
+.qodef-vertical-align-containers {
+	background-color: transparent;
+}
+/* The old -76px pull was a HOME PAGE trick (tuck the slider under the
+   transparent header). Site-wide it dragged interior pages up behind the
+   header and buried the h1. Both are 0 now — if you ever want the home
+   slider to tuck up again, change ONLY the .page-id-26 rule. */
+.qodef-content {
+	margin-top: 0;
+}
+.page-id-26 .qodef-content {
+	margin-top: 0px;
+}
+.foogallery .fg-caption-title {
+	height: auto;
+	white-space: inherit;
+}
+:root {
+	--content-max: 1400px;
+	--gutter: 5rem;
+	--mobile-bar-h: 5rem;     /* height of the floating mobile icon bar */
+	--mobile-bar-top: 1rem;   /* how far the icon sits down from the top */
+	/* SINGLE KNOB for space above the h1 on every project page.
+	   Change it here, not per page.
+	   DESKTOP: this is the gap between the bottom of the nav bar and
+	   the top of the H1 — it is applied as padding-top on the H1's
+	   block, which begins exactly where the header ends. 3rem = 48px.
+	   (Mobile overrides it with its own formula further down, because
+	   there the bar is out of flow and the name is centred inside it.) */
+	--h1-space: 3rem;
+	/* Gap between her name and the H1 at mobile widths. Declared here as
+	   well as in the mobile block so it always has a value, whichever
+	   breakpoint is live. */
+	--h1-gap-above: 3rem;
+}
+/* Remove the appear-on-scroll (sticky) header */
+.qodef-sticky-header { display: none !important; }
+/* Centered content column with consistent gutters */
+.qodef-content-inner .qodef-container-inner {
+	width: 100% !important;
+	max-width: var(--content-max) !important;
+	margin-left: auto !important;
+	margin-right: auto !important;
+	padding-left: var(--gutter) !important;
+	padding-right: var(--gutter) !important;
+	box-sizing: border-box !important;
+}
+/* Header pinned to the same column edges (title left, nav right) */
+.qodef-menu-area .qodef-vertical-align-containers {
+	width: 100% !important;
+	max-width: var(--content-max) !important;
+	margin-left: auto !important;
+	margin-right: auto !important;
+	padding-left: var(--gutter) !important;
+	padding-right: var(--gutter) !important;
+	box-sizing: border-box !important;
+}
+/* Breathing room at the top */
+.qodef-page-header { padding-top: 1.5rem !important; }
+/* H1 — solid rem steps (largest → smallest) */
+/* margin-top:0 kills a phantom `h1 { margin: -70px 0 0 }` rule that lives
+   OUTSIDE Additional CSS (theme/customizer). */
+.qodef-content h1 {
+	font-size: 2.75rem !important;
+	font-weight: 600 !important;   /* theme default was 700; 500 and 400 are lighter */
+	line-height: 1.1 !important;
+	margin-top: 0 !important;
+}
+@media (max-width: 1100px) {
+	:root{
+		--gutter: 4rem;
+	}
+}
+/* The ≤1024px step used to drop the H1 from 3.25rem to 2.75rem. The base
+   is 2.75rem now, so that step was setting the value it already had —
+   removed. Same story for the old ≤1024 --h1-space: 3rem, now the base.
+   The ≤768 and ≤480 steps below still do real work. */
+@media (max-width: 768px)  { .qodef-content h1 { font-size: 2.25rem !important; } }
+@media (max-width: 480px)  { .qodef-content h1 { font-size: 1.875rem !important; } }
+/* Space above the h1 — solid rem steps, only ever shrinks.
+   NOTE: at <=768px the bar is out of flow, so this padding is the ONLY
+   thing holding the h1 clear of the floating icon. It must stay larger
+   than --mobile-bar-h. See the mobile block at the bottom. */
+/* WPBakery bakes a per-page padding into the h1's block via a
+   vc_custom_XXXXX class (Sollbruchstelle 50px, Landvermesserin II its own
+   value, etc. — whatever was dragged in the editor that day). Those are
+   output with !important, so they are zeroed explicitly here, along with
+   the row/column wrappers, before a single consistent value is applied. */
+.qodef-content .wpb_text_column:has(h1),
+.qodef-content .wpb_column:has(h1) > .vc_column-inner,
+.qodef-content .vc_row:has(h1) > .wpb_column > .vc_column-inner {
+	padding-top: 0 !important;
+}
+/* One source of truth for every project page. */
+.qodef-content .wpb_text_column:has(h1) { padding-top: var(--h1-space) !important; }
+
+/* SPACE BELOW THE H1, down to the first thumbnail.
+   Measured on the live page it was 50px, from two sources: 10px of
+   padding-bottom baked into the h1's WPBakery text column, and a 40px
+   .vc_empty_space element dragged in after it. Both are zeroed and one
+   deliberate value is set here instead. */
+/* Space UNDER the h1, standardised. Exhibitions is the only page with a
+   .vc_empty_space element after the heading; the other 15 have none, so a
+   rule that only touched the spacer would have standardised one page. The
+   gap is a margin on the heading's own block instead, which exists
+   everywhere, and the spacer is zeroed so the two cannot add up. */
+.qodef-content .wpb_text_column:has(h1) {
+	padding-bottom: 0 !important;
+	margin-bottom: var(--h1-gap-below) !important;
+}
+.qodef-content .wpb_text_column:has(h1) + .vc_empty_space {
+	height: 0 !important;
+}
+:root { --h1-gap-below: 1.25rem; }
+/* ============================================================
+   GALLERIES — max 3 columns, fills available space, 1 col small.
+   12px gutters. Captions below the image, always visible.
+   NOTE ON MASONRY: every generated thumbnail on this site is
+   900x750 (ratio 1.200) — FooGallery is hard-cropping them all
+   to one size server-side. Masonry needs VARIED heights, so it
+   cannot be done in CSS; the varied pixels aren't in the files.
+   To get real masonry, change the FooGallery setting (see notes),
+   then swap this grid for the column-count block at the bottom.
+   ============================================================ */
+/* Applies to EVERY gallery, masonry included — safe, no layout impact. */
+.foogallery { padding-bottom: 10rem !important; }
+/* ------------------------------------------------------------------
+   Everything below is scoped :not(.fg-masonry).
+   FooGallery's masonry is a JS engine that absolutely-positions items;
+   forcing display:grid on it flattens the layout into one column.
+   Excluding it means any gallery you switch to the Masonry template
+   renders 100% natively with zero extra CSS.
+   ------------------------------------------------------------------ */
+.foogallery:not(.fg-masonry) {
+	display: grid !important;
+	grid-template-columns: repeat(3, 1fr) !important;
+	gap: 12px !important;
+	align-items: start !important;
+}
+@media (max-width: 999px) { .foogallery:not(.fg-masonry) { grid-template-columns: repeat(2, 1fr) !important; } }
+@media (max-width: 699px) { .foogallery:not(.fg-masonry) { grid-template-columns: 1fr !important; } }
+.foogallery:not(.fg-masonry) .fg-item {
+	display: block !important;
+	width: 100% !important;
+	max-width: none !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	float: none !important;
+}
+/* FooGallery puts a 4px border on figure.fg-item-inner, which insets every
+   image 4px and breaks alignment with the content edge. */
+.foogallery:not(.fg-masonry) .fg-item-inner {
+	width: 100% !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 0 !important;
+}
+.foogallery:not(.fg-masonry) .fg-thumb {
+	display: block !important;
+	width: 100% !important;
+	height: auto !important;
+}
+/* height:auto + object-fit:initial — the files are already the right
+   proportion, so let them size naturally instead of re-cropping. */
+.foogallery:not(.fg-masonry) .fg-image,
+.foogallery:not(.fg-masonry) .fg-thumb img {
+	display: block !important;
+	width: 100% !important;
+	height: auto !important;
+	object-fit: initial !important;
+}
+/* Captions: below the image, in flow, never overlaid.
+   Masonry excluded — its own caption handling already sits below the
+   image and is sized to the item it measured. */
+.foogallery:not(.fg-masonry) .fg-caption {
+	position: static !important;
+	opacity: 1 !important;
+	background: none !important;
+	transform: none !important;
+	padding: 0.625rem 0 0 0 !important;
+	text-align: left !important;
+}
+.foogallery:not(.fg-masonry) .fg-caption-inner { padding: 0 !important; }
+.foogallery:not(.fg-masonry) .fg-caption-title {
+	height: auto !important;
+	white-space: normal !important;
+	font-size: 0.875rem !important;
+	line-height: 1.4 !important;
+	margin: 0 !important;
+}
+.foogallery:not(.fg-masonry) .fg-caption-desc {
+	font-size: 0.8125rem !important;
+	line-height: 1.4 !important;
+	opacity: 0.7 !important;
+	margin: 0.15rem 0 0 0 !important;
+}
+/* Long masonry captions wrap instead of truncating. The only masonry
+   override in the file — safe because it touches text, not geometry. */
+.foogallery.fg-masonry .fg-caption-title {
+	height: auto !important;
+	white-space: normal !important;
+}
+/* Header breakpoint: desktop nav down to 769px, hamburger at 768px and below */
+@media (min-width: 769px) {
+	.qodef-page-header { display: inline-block !important; }
+	.qodef-mobile-header { display: none !important; }
+}
+@media (max-width: 768px) {
+	.qodef-page-header { display: none !important; }
+	.qodef-mobile-header { display: block !important; }
+}
+/* ============================================================
+   MOBILE BAR — fixed, transparent, floats above the content
+   ============================================================ */
+@media (max-width: 768px) {
+	/* Out of flow entirely. The bar no longer reserves 100px at the top
+	   of every page, so content starts at 0 and the h1 padding below is
+	   the single thing controlling top spacing. */
+	.qodef-mobile-header {
+		position: fixed !important;
+		top: var(--mobile-bar-top) !important;
+		left: 0 !important;
+		right: 0 !important;
+		width: 100% !important;
+		height: var(--mobile-bar-h) !important;
+		background: transparent !important;
+		z-index: 9999 !important;
+		/* The bar spans the full width but is mostly empty. Without this,
+		   that empty strip would swallow every click on the content
+		   underneath it. Interaction is handed back to the icon and the
+		   menu only, just below. */
+		pointer-events: none !important;
+	}
+	.qodef-mobile-header .qodef-mobile-menu-opener,
+	.qodef-mobile-header .qodef-mobile-nav {
+		pointer-events: auto !important;
+	}
+	/* Kill every inherited white background on the wrappers.
+	   (The dropdown keeps its own background — see .qodef-mobile-nav.) */
+	.qodef-mobile-header,
+	.qodef-mobile-header .qodef-mobile-header-inner,
+	.qodef-mobile-header .qodef-vertical-align-containers,
+	.qodef-mobile-header .qodef-grid,
+	.qodef-mobile-header .qodef-position-left,
+	.qodef-mobile-header .qodef-position-right {
+		background: transparent !important;
+		box-shadow: none !important;
+		border: 0 !important;
+	}
+	.qodef-mobile-header .qodef-mobile-header-inner,
+	.qodef-mobile-header .qodef-vertical-align-containers {
+		height: var(--mobile-bar-h) !important;
+	}
+	/* Same column + gutter as the content, so the icon lands exactly on
+	   the content's right edge. Gutter goes on .qodef-grid ONLY —
+	   adding it to .qodef-vertical-align-containers too double-pads it. */
+	.qodef-mobile-header .qodef-grid {
+		width: 100% !important;
+		max-width: var(--content-max) !important;
+		margin: 0 auto !important;
+		padding-left: var(--gutter) !important;
+		padding-right: var(--gutter) !important;
+		box-sizing: border-box !important;
+	}
+	.qodef-mobile-header .qodef-vertical-align-containers {
+		padding-left: 0 !important;
+		padding-right: 0 !important;
+	}
+	.qodef-mobile-menu-opener {
+		float: right !important;
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+	.qodef-mobile-header .qodef-mobile-menu-opener a {
+		margin: 0 !important;
+		padding: 0 !important;
+		height: var(--mobile-bar-h) !important;
+		min-width: 2.75rem !important;
+		display: flex !important;
+		align-items: center !important;
+		justify-content: flex-end !important;
+	}
+	/* THE ONE NUMBER CONTROLLING THE HAMBURGER'S SIZE.
+	   History: theme default 2rem → 3rem (the 1.5x) → 1.25rem.
+	   Measured live at 3rem it rendered 48px square, which read as
+	   far too heavy against 13px nav type.
+
+	   The opener is float:right and the link is justify-content:
+	   flex-end, so the glyph grows and shrinks LEFTWARDS — its right
+	   edge, and therefore your gutter, never moves.
+
+	   NOTE: the glyph shrinks but the TAP TARGET does not. The link
+	   keeps min-width 2.75rem (44px, Apple's minimum) and the full
+	   bar height, so a small icon is still easy to hit. Do not put
+	   the font-size on the link alone or the two would move together. */
+	.qodef-mobile-header { --hamburger-size: 2rem; }
+	.qodef-mobile-header .qodef-mobile-menu-opener a,
+	.qodef-mobile-header .qodef-mobile-menu-opener .qodef-mobile-opener-icon-holder,
+	.qodef-mobile-header .qodef-mobile-menu-opener i {
+		font-size: var(--hamburger-size) !important;
+		line-height: 1 !important;
+	}
+	/* Dropdown hangs off the bar and scrolls if it outgrows the screen.
+	   It keeps a solid background or it would be unreadable over photos. */
+	.qodef-mobile-header .qodef-mobile-nav {
+		position: absolute !important;
+		top: var(--mobile-bar-h) !important;
+		left: 0 !important;
+		right: 0 !important;
+		max-height: calc(100vh - var(--mobile-bar-h) - var(--mobile-bar-top)) !important;
+		overflow-y: auto !important;
+	}
+	/* Clearance for the floating bar, measured from HER NAME rather than
+	   from the bar's box.
+
+	   This is the correction. The name is vertically centred in the bar
+	   via line-height, so with a 5rem bar there is ~1.9rem of empty bar
+	   sitting below the text. Adding the FULL bar height therefore
+	   overshot: you asked for 2rem and the eye saw nearly 4rem.
+
+	   Measured live: bar 32→112px, name text 64.5→79.5px. So the gap the
+	   reader sees starts at the bar's midpoint plus half a line, not at
+	   the bar's bottom edge:
+
+	       top offset + half the bar + half a line + the gap you want
+
+	   Works out to 7rem here and 6.25rem at ≤480px, and re-derives itself
+	   if the bar height ever changes. --h1-gap-above is the only knob. */
+	:root {
+		--h1-gap-above: 3rem;
+		--h1-space: calc(
+			var(--mobile-bar-top) + (var(--mobile-bar-h) / 2)
+			+ 0.47rem + var(--h1-gap-above)
+		);
+	}
+}
+@media (max-width: 768px){
+	:root{
+		--gutter: 1.5rem
+	}
+}
+
+/* ======================================================
+   DESKTOP LOGO → HER NAME, LEFT, ON THE NAV'S BASELINE
+   ======================================================
+   The desktop logo has the SAME fault as the mobile one:
+
+       http://violayesiltac.com/.../ViolaNeu.avif
+
+   served over http on an https page, so it is blocked as
+   mixed content (naturalWidth reports 0). On top of that
+   the wrapper is display:none, so nothing shows at all.
+   Same fix as mobile — her name set as live text.
+
+   POSITION. The name goes in .qodef-position-left, which
+   already begins at x=93px, the exact left edge of the H1
+   and the thumbnails. So it lines up with the content
+   column without a hard-coded offset.
+
+   BASELINE. The nav links are 13px inside a 76px bar; the
+   name is 19.2px. Both are centred in that bar, which puts
+   their CENTRES together but leaves the larger text's
+   baseline slightly lower — measured at 3.0px. The
+   translateY(-3px) below removes exactly that, so the two
+   sit on one baseline rather than merely one centre line.
+   Measured, not guessed: nav baseline 64.8px, name 67.8px.
+   ====================================================== */
+@media (min-width: 769px) {
+	.qodef-page-header .qodef-logo-wrapper {
+		display: block !important;
+	}
+	.qodef-page-header .qodef-logo-wrapper picture,
+	.qodef-page-header .qodef-logo-wrapper img {
+		display: none !important;
+	}
+	.qodef-page-header .qodef-position-left {
+		width: auto !important;
+		white-space: nowrap !important;
+		/* The name sat 4px right of the H1 and the thumbnails. Cause:
+		   .qodef-position-left-inner is an inline-block, so the newline
+		   in the theme's markup before it renders as a real space —
+		   4px at the parent's 16px font. Zeroing the font size on the
+		   PARENT removes that space; the child puts its own back.
+		   (display:block on the inner also fixes the 4px but drops the
+		   name below the nav — tried and rejected.)
+		   Verified: name and H1 both start at x=93. */
+		font-size: 0 !important;
+	}
+	.qodef-page-header .qodef-position-left-inner {
+		font-size: 1rem !important;
+	}
+	.qodef-page-header .qodef-logo-wrapper a {
+		height: 76px !important;          /* the menu bar's own height */
+		width: auto !important;
+		display: flex !important;
+		align-items: center !important;
+		text-decoration: none !important;
+	}
+	.qodef-page-header .qodef-logo-wrapper a::after {
+		content: "Viola Yeşiltaç";
+		font-size: var(--desktop-name-size);
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		font-weight: 600;
+		color: #0e0e0e;
+		white-space: nowrap;
+		line-height: 1;
+		transform: translateY(-3px);      /* baseline match — see note */
+	}
+	:root { --desktop-name-size: 1.2rem; }
+}
+@media (max-width: 480px) {
+	:root {
+		--mobile-bar-h: 3.5rem;
+		--mobile-bar-top: 1rem;
+		/* same formula as the ≤768 block — see the note there */
+		--h1-space: calc(
+			var(--mobile-bar-top) + (var(--mobile-bar-h) / 2)
+			+ 0.47rem + var(--h1-gap-above)
+		);
+	}
+}
+@media (max-width: 400px) {
+	.vc_empty_space {
+		height: 0	!important;
+	}
+}
+
+
+/* ======================================================
+   NEW — MOBILE LOGO → HER NAME
+   ======================================================
+   The mobile logo is a BROKEN IMAGE, which is why it shows
+   as an empty box reading "mobile logo". Its source is
+
+       http://violayesiltac.com/.../ViolaNeu.png
+
+   on an https page, so the browser blocks it as mixed
+   content and falls back to the alt text. (naturalWidth
+   reports 0, which confirms it.) The theme also puts an
+   inline height:1000px on the link — that is where the
+   oversized box comes from.
+
+   Rather than fix the PNG, this sets her name as text,
+   which stays sharp at any pixel density.
+   ====================================================== */
+.qodef-mobile-header .qodef-mobile-logo-wrapper picture,
+.qodef-mobile-header .qodef-mobile-logo-wrapper img {
+	display: none !important;
+}
+
+.qodef-mobile-header .qodef-mobile-logo-wrapper a {
+	height: auto !important;                  /* kills the inline 1000px */
+	display: inline-block !important;
+	line-height: var(--mobile-bar-h) !important;   /* centres in your bar */
+	text-decoration: none !important;
+}
+
+.qodef-mobile-header .qodef-mobile-logo-wrapper a::after {
+	content: "Viola Yeşiltaç";
+	display: inline-block;
+	font-size: 15px;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+	font-weight: 600;
+	color: #0e0e0e;
+	white-space: nowrap;
+}
+
+/* The bar is pointer-events:none so its empty width does not swallow
+   clicks on the content beneath. That also makes the name unclickable,
+   so interaction is handed back here — the same way the icon and the
+   dropdown get it above. Delete this rule if you would rather the name
+   were inert. */
+.qodef-mobile-header .qodef-mobile-logo-wrapper {
+	pointer-events: auto !important;
+}
+
+
+/* ======================================================
+   NEW — NAV STAYS BLACK, NEVER PINK
+   ======================================================
+   Hover, current page, and ancestor-of-current-page all
+   held to the same near-black the links already use at
+   rest (#0e0e0e — the theme's own value).
+
+   FOUND IT. The pink is #ea9195, Kloe's accent colour. It
+   appears 74 times in the theme's modules.min.css, and the
+   rule that matters is not a menu rule at all:
+
+       a:hover, p a:hover { color: #ea9195 }
+       h1 a:hover … h6 a:hover { color: #ea9195 }
+
+   That is why my earlier menu-only selectors kept missing
+   it — and why the HAMBURGER turned pink too: the opener
+   is an <a>, so the global rule caught it. My earlier note
+   here, that no rule set a hover colour, was wrong; I had
+   searched the parsed rules of the sheets the browser let
+   me read, and the theme's own stylesheet was not among
+   them. Fetching the CSS as text found it immediately.
+
+   So the fix is at the source: every link, in every state,
+   plus the opener and its icon. The theme sets these
+   WITHOUT !important, so one !important beats all 74.
+   ====================================================== */
+a:hover,
+a:focus,
+a:active,
+p a:hover,
+h1 a:hover, h2 a:hover, h3 a:hover,
+h4 a:hover, h5 a:hover, h6 a:hover,
+.qodef-mobile-menu-opener a,
+.qodef-mobile-menu-opener a:hover,
+.qodef-mobile-menu-opener a:focus,
+.qodef-mobile-menu-opener a:active,
+.qodef-mobile-menu-opener a:hover .qodef-mobile-opener-icon-holder,
+.qodef-mobile-menu-opener a:hover i,
+.qodef-mobile-menu-opener.qodef-mobile-menu-opened a,
+.qodef-mobile-menu-opener.qodef-mobile-menu-opened a i {
+	color: #0e0e0e !important;
+}
+
+/* The same accent is the text-selection highlight. Delete these two
+   rules if you would rather keep pink there. */
+::selection    { background: #d8d8d8 !important; color: #0e0e0e !important; }
+::-moz-selection { background: #d8d8d8 !important; color: #0e0e0e !important; }
+
+/* And the menu states, named explicitly. */
+.qodef-main-menu > ul > li > a,
+.qodef-main-menu > ul > li > a > span,
+.qodef-main-menu > ul > li > a:hover,
+.qodef-main-menu > ul > li > a:hover > span,
+.qodef-main-menu > ul > li:hover > a,
+.qodef-main-menu > ul > li:hover > a > span,
+.qodef-main-menu > ul > li.current-menu-item > a,
+.qodef-main-menu > ul > li.current-menu-item > a > span,
+.qodef-main-menu > ul > li.current-menu-ancestor > a,
+.qodef-main-menu > ul > li.current-menu-ancestor > a > span,
+.qodef-main-menu > ul > li.current_page_item > a,
+.qodef-main-menu > ul > li.current_page_item > a > span,
+.qodef-main-menu > ul > li.qodef-active-item > a,
+.qodef-main-menu > ul > li.qodef-active-item > a > span,
+.qodef-mobile-nav a,
+.qodef-mobile-nav a span,
+.qodef-mobile-nav a:hover,
+.qodef-mobile-nav a:hover span,
+.qodef-mobile-nav li.current-menu-item > a,
+.qodef-mobile-nav li.current-menu-item > a span,
+.qodef-mobile-nav li.current-menu-ancestor > a,
+.qodef-mobile-nav li.current-menu-ancestor > a span {
+	color: #0e0e0e !important;
+}
+
+
+/* ======================================================
+   NEW — THE FLOATING BAR STAYS PUT
+   ======================================================
+   Your <body> carries the theme class
+
+       qodef-sticky-up-mobile-header
+
+   which is Kloe's "hide the mobile header on scroll down,
+   bring it back on scroll up" behaviour. Your block above
+   already pins position and top, but the theme can still
+   reach the bar through opacity, visibility, display or a
+   transform, so those are held here too. Now it simply
+   floats in the top right for the whole visit.
+
+   Verified on the live page: the bar reports position
+   fixed, top 16px, z-index 9999, and does not move
+   between scroll 0 and scroll 1400.
+   ====================================================== */
+@media (max-width: 768px) {
+	.qodef-mobile-header,
+	body.qodef-sticky-up-mobile-header .qodef-mobile-header,
+	.qodef-mobile-header.qodef-sticky-mobile-header-appear {
+		position: fixed !important;
+		top: var(--mobile-bar-top) !important;
+		display: block !important;
+		visibility: visible !important;
+		opacity: 1 !important;
+		transform: none !important;
+	}
+	/* ---- THE INNER WRAPPER IS SEPARATELY FIXED. THIS IS THE BUG. ----
+	   .qodef-mobile-header-inner carries its OWN position:fixed; top:0
+	   from the theme. A fixed child ignores its parent, so every
+	   --mobile-bar-top we set on the outer header moved an empty box
+	   and left her name and the hamburger sitting at viewport top 0.
+	   That is why the 2rem at the top appeared to do nothing, and why
+	   the gap under the bar measured 4rem when the arithmetic said 2.
+	   Measured live: outer at 32px, inner at 0px, same moment.
+
+	   The cure is to stop the inner positioning itself at all. Forced
+	   relative with top:0, it can only sit inside its parent, so the
+	   OUTER header's top is the one and only control and the bar lands
+	   exactly on --mobile-bar-top in every state. */
+	.qodef-mobile-header .qodef-mobile-header-inner {
+		position: relative !important;
+		top: 0 !important;
+		left: 0 !important;
+		right: 0 !important;
+		transform: none !important;
+		visibility: visible !important;
+		opacity: 1 !important;
+	}
+
+	/* ---- REMOVED: the 1.5rem "stuck" offset ----
+	   It keyed off .mobile-header-appear, which I had seen the theme add
+	   at rest and drop on scroll. Re-checked against the PUBLISHED site
+	   across a fresh load, scroll 500, scroll 1400 and back: that class
+	   is never present at all, so the :not() matched permanently and the
+	   rule quietly added 24px in every state — including the moment you
+	   were looking at, where it pushed the bar down into the H1.
+
+	   A genuinely scroll-dependent offset needs the theme's JS to be
+	   telling the truth about its own state, and here it is not. If you
+	   still want the bar lower once scrolling starts, that wants a few
+	   lines of JS watching scrollY, not CSS — say the word. */
+}
+
+
+/* ======================================================
+   NEW — FOOTER: WHITE GROUND, BLACK TEXT
+   ======================================================
+   It was near-black (#1c1c1c) with grey text (#868686).
+   The markup is one band, .qodef-footer-bottom-holder,
+   holding a centred paragraph with the Datenschutz and
+   Impressum links.
+   ====================================================== */
+footer,
+footer .qodef-footer-inner,
+.qodef-footer-bottom-holder,
+.qodef-footer-bottom-holder-inner {
+	background-color: #ffffff !important;
+}
+footer,
+footer p,
+footer .widget,
+.qodef-footer-bottom-holder,
+.qodef-footer-bottom-holder p {
+	color: #0e0e0e !important;
+}
+footer a,
+footer a:link,
+footer a:visited,
+footer a:hover,
+footer a:focus,
+footer a:active {
+	color: #0e0e0e !important;
+}
+
+
+/* ======================================================
+   NEW — MOBILE MENU OPENS FULL SCREEN
+   ======================================================
+   THE HOOK. There is no state class to work with. I
+   clicked the opener and diffed every class on the opener,
+   the nav, <body> and <html>: not one changes. The theme
+   toggles the menu with jQuery, which writes an inline
+   style — display:none closed, display:block open — and
+   nothing else. That inline style is therefore the only
+   honest signal in the DOM, and :has() can read it.
+   (:has() is supported here; CSS.supports confirmed it,
+   and the H1 rules above already rely on it.)
+
+   THE ONE THING NOT TO TOUCH: `display` on .qodef-mobile-nav.
+   The theme animates the menu by setting it inline. Override
+   it here and the menu stops opening altogether. Everything
+   below sets position, size and colour — never display.
+   ====================================================== */
+@media (max-width: 768px) {
+
+	/* Measured against the real menu items. The widest, "Exhibitions",
+	   renders 246px at 3rem. A 320px screen leaves 272px inside the
+	   gutters, so 3rem clears even the narrowest phone — the step below
+	   is now headroom rather than a fix. (It was 3.5rem, where the same
+	   word measured 287px and would have wrapped at 320px.) */
+	:root {
+		--mobile-menu-size: 3rem;
+		/* How far the centred menu block sits above dead centre.
+		   0 = dead centre. Raising it moves the whole block up. */
+		--mobile-menu-lift: 0rem;
+		/* Extra space between links, on top of the line height. */
+		--mobile-menu-gap: 0.625rem;
+	}
+
+	.qodef-mobile-header .qodef-mobile-nav {
+		position: fixed !important;
+		top: 0 !important;
+		left: 0 !important;
+		right: 0 !important;
+		bottom: 0 !important;
+		width: 100% !important;
+		height: 100vh !important;
+		height: 100dvh !important;      /* honours the iOS address bar */
+		max-height: none !important;
+		margin: 0 !important;
+		background: #ffffff !important;
+		z-index: 1 !important;          /* under the opener, over the page */
+		overflow-y: auto !important;
+		-webkit-overflow-scrolling: touch;
+		/* Stops a scroll inside the sheet from chaining to the page
+		   behind once the sheet's own content runs out. This is what
+		   replaces the overflow:hidden lock — see the note below. */
+		overscroll-behavior: contain !important;
+	}
+
+	/* The list sits centred in the sheet. The top padding clears the
+	   bar so the first item can never sit under her name. */
+	.qodef-mobile-header .qodef-mobile-nav .qodef-grid {
+		display: flex !important;
+		flex-direction: column !important;
+		justify-content: center !important;
+		min-height: 100% !important;
+		box-sizing: border-box !important;
+		/* --h1-space is the same measure that puts the H1 on every page,
+		   so the menu block sits in the field below the bar rather than
+		   floating over it. Centred within that field.
+
+		   THE LIFT. The block is centred, so padding on one side moves it
+		   half that far. To raise it by --mobile-menu-lift the bottom
+		   padding therefore carries TWICE the lift — 4rem up needs 8rem
+		   added below. Change the lift, not these two lines. */
+		padding-top: var(--h1-space) !important;
+		padding-bottom: calc(
+			var(--h1-space) + (var(--mobile-menu-lift) * 2)
+		) !important;
+	}
+
+	.qodef-mobile-header .qodef-mobile-nav ul { width: 100% !important; }
+	/* The hairline between items is border-bottom: 1px solid #eaeaea on
+	   the <a>, NOT on the <li>. My first pass zeroed the li, which is
+	   why the lines survived it. Both are cleared here. */
+	.qodef-mobile-header .qodef-mobile-nav li,
+	.qodef-mobile-header .qodef-mobile-nav li a {
+		border: 0 !important;
+		box-shadow: none !important;
+		list-style: none !important;
+	}
+	.qodef-mobile-header .qodef-mobile-nav li a,
+	.qodef-mobile-header .qodef-mobile-nav li a span {
+		font-size: var(--mobile-menu-size) !important;
+		line-height: 1.15 !important;
+		font-weight: 400 !important;
+		color: #0e0e0e !important;
+		text-transform: none !important;
+		letter-spacing: -0.01em !important;
+		text-align: center !important;
+	}
+	.qodef-mobile-header .qodef-mobile-nav li a {
+		display: block !important;
+		padding: 0.1em 0 !important;
+	}
+
+	/* Extra air BETWEEN the links. Deliberately a margin on every item
+	   after the first, not padding on the <a>:
+
+	     - padding would land on both edges of every link, so it would
+	       add twice as much between items as the number says, and would
+	       also pad above the first and below the last — which shifts the
+	       whole centred block rather than just opening it up;
+	     - it would also enlarge each link's tap target asymmetrically.
+
+	   li + li gives exactly this much between neighbours and nothing at
+	   the ends. 0.625rem is the middle of the 0.5–0.75 you asked for. */
+	.qodef-mobile-header .qodef-mobile-nav li + li {
+		margin-top: var(--mobile-menu-gap) !important;
+	}
+	.qodef-mobile-header .qodef-mobile-nav ul,
+	.qodef-mobile-header .qodef-mobile-nav li {
+		text-align: center !important;
+	}
+
+	/* The opener and her name float ABOVE the sheet. Without this the
+	   full-screen nav would cover the X and it could not be closed. */
+	.qodef-mobile-header .qodef-mobile-menu-opener,
+	.qodef-mobile-header .qodef-mobile-logo-wrapper {
+		position: relative !important;
+		z-index: 3 !important;
+	}
+
+	/* ---- HAMBURGER → X, WITHOUT MOVING ----
+	   The glyph is hidden with visibility, NOT display. visibility
+	   keeps the <i>'s box, so the holder does not resize and the X —
+	   centred on that same box — lands exactly where the bars were.
+	   display:none would collapse it and the icon would shift, which
+	   is the whole thing you asked to avoid. */
+	.qodef-mobile-header .qodef-mobile-opener-icon-holder {
+		position: relative !important;
+	}
+	.qodef-mobile-header:has(.qodef-mobile-nav[style*="block"])
+		.qodef-mobile-opener-icon-holder i {
+		visibility: hidden !important;
+	}
+	.qodef-mobile-header:has(.qodef-mobile-nav[style*="block"])
+		.qodef-mobile-opener-icon-holder::before,
+	.qodef-mobile-header:has(.qodef-mobile-nav[style*="block"])
+		.qodef-mobile-opener-icon-holder::after {
+		content: "";
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: 1.6rem;
+		height: 2px;
+		background: #0e0e0e;
+		border-radius: 1px;
+	}
+	.qodef-mobile-header:has(.qodef-mobile-nav[style*="block"])
+		.qodef-mobile-opener-icon-holder::before {
+		transform: translate(-50%, -50%) rotate(45deg);
+	}
+	.qodef-mobile-header:has(.qodef-mobile-nav[style*="block"])
+		.qodef-mobile-opener-icon-holder::after {
+		transform: translate(-50%, -50%) rotate(-45deg);
+	}
+
+	/* ---- WHY THERE IS NO overflow:hidden LOCK HERE ----
+	   There was one, and it was what moved your X.
+
+	   Hiding overflow removes the scrollbar. On a browser with classic
+	   scrollbars that widens the layout viewport by their width, and the
+	   header is fixed and right-anchored, so the icon jumped right by
+	   exactly that amount the instant the menu opened — the shift you
+	   saw. (I could not reproduce it at first: the pane I test in uses
+	   overlay scrollbars, width 0, so it measured a clean dx of 0. That
+	   is why I reported no movement.)
+
+	   Rather than compensate for the scrollbar, the cause is removed:
+	   nothing hides the overflow, so the width never changes and the X
+	   cannot move. overscroll-behavior on the sheet above keeps the page
+	   behind from scrolling, which is all the lock was for. The sheet is
+	   opaque and full-screen, so nothing behind it is visible anyway. */
+}
+
+/* Belt and braces for the same class of jump: reserve the scrollbar's
+   space permanently, so no state change on this site can reflow the page
+   sideways. Every page here scrolls, so the gutter is always in use and
+   nothing moves. */
+html { scrollbar-gutter: stable; }
+
+/* Small phones: 3.5rem would wrap "Exhibitions" at 320px. A discrete
+   step, not a fluid clamp. */
+@media (max-width: 360px) {
+	:root { --mobile-menu-size: 2.5rem; }
+}
+
+
+/* ------------------------------------------------------
+   ...EXCEPT IN THE LIGHTBOX.
+   FooBox puts .fbx-active on <body> while a picture is
+   open — confirmed live; it also puts .fbx-no-scroll on
+   <html>. Either would work; body.fbx-active is the one
+   that reads clearly.
+
+   This matters more than it used to. The lightbox overlay
+   sits at z-index 9000001 and the bar at 9999, so the bar
+   was always behind it — but now that the ground is only
+   80% opaque, "behind it" means faintly showing through.
+   Hidden outright instead.
+
+   The second selector does the same for the desktop
+   header, for the same reason. Delete that line if you
+   would rather keep it visible on desktop.
+   ------------------------------------------------------ */
+body.fbx-active .qodef-mobile-header,
+body.fbx-active .qodef-page-header {
+	display: none !important;
+}
