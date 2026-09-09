@@ -41,6 +41,12 @@ h2,
 h3{
     font-family: "Poppins", sans-serif;
 }
+
+/* make the nav items bigger */
+.qodef-main-menu > ul > li > a > span {
+    font-size: 1rem;
+    font-weight: 400
+}
 /* ======================================================
    Show Pages— Page Settings → Custom CSS
    ======================================================
@@ -97,6 +103,12 @@ h3{
   transition: text-decoration-color 0.15s ease;
   
 }
+/* Turn off underline below 768px */
+@media (max-width: 850px) {
+    .exhibition .doc a {
+        text-decoration:none !important;
+    }
+}
 
 /* Arrow Styling */
 .exhibition .venue a:not(.unavailable)::after {
@@ -119,13 +131,16 @@ h3{
     "opsz" 24;
 }
 
+/* link highlight */
 .exhibition .venue a:hover,
 .exhibition .doc a:hover,
 .exhibition .venue a:focus-visible,
 .exhibition .doc a:focus-visible {
   text-decoration-color: currentColor;
 	color: #0e0e0e !important;
-  background-color: rgba(0, 249, 254, .10);
+  background-color: rgba(239, 239, 239, 1);
+  padding-right: 5px;
+  border-radius: 5px;
 }
 
 /* Gives Exhibitions gallery thumbnail cards space and breathing room */
@@ -163,13 +178,11 @@ h3{
 
 /* No hover on touch, so the hairline is permanent there
    or the link is unmarked. Most of her traffic is phones. */
-@media (hover: none) {
-  .exhibition .venue a,
-  .exhibition .doc a {
-    text-decoration-color: rgba(14, 14, 14, 0.35);
-    
-  }
-}
+/* ======================================================
+   MOBILE — NO LINK UNDERLINES / HOVER EFFECTS
+   Project pages only - Located at the end of the style sheet !!!!
+   ====================================================== */
+
 
 @media (max-width: 768px) {
   .qodef-content .exhibition h1 { font-size: 2rem !important; }
@@ -870,6 +883,59 @@ End of video intro
 	.qodef-page-header { display: none !important; }
 	.qodef-mobile-header { display: block !important; }
 }
+
+/* ======================================================
+   MOBILE NAME — MANUAL POSITION CONTROL
+   ====================================================== */
+
+@media (max-width: 768px) {
+
+  :root {
+    --mobile-name-x: var(--gutter);
+    --mobile-name-y: 0px;
+  }
+
+  /* Disable Kloe's built-in centered-logo positioning */
+  .qodef-mobile-header .qodef-position-center,
+  .qodef-mobile-header .qodef-position-center-inner {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    transform: none !important;
+  }
+
+  .qodef-mobile-header .qodef-grid {
+    position: relative !important;
+  }
+
+  /* Viola's name */
+  .qodef-mobile-header .qodef-mobile-logo-wrapper {
+    position: absolute !important;
+
+    left: var(--mobile-name-x) !important;
+    right: auto !important;
+
+    top: calc(50% + var(--mobile-name-y)) !important;
+    transform: translateY(-50%) !important;
+
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    text-align: left !important;
+    z-index: 3 !important;
+    pointer-events: auto !important;
+  }
+
+  .qodef-mobile-header .qodef-mobile-logo-wrapper a {
+    display: inline-block !important;
+    height: auto !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+}
 /* ============================================================
    MOBILE BAR — fixed, transparent, floats above the content
    ============================================================ */
@@ -892,6 +958,8 @@ End of video intro
 		   menu only, just below. */
 		pointer-events: none !important;
 	}
+
+
 	.qodef-mobile-header .qodef-mobile-menu-opener,
 	.qodef-mobile-header .qodef-mobile-nav {
 		pointer-events: auto !important;
@@ -961,6 +1029,39 @@ End of video intro
 		font-size: var(--hamburger-size) !important;
 		line-height: 1 !important;
 	}
+
+    /* ======================================================
+   MOBILE MENU ICON — MATERIAL SYMBOLS "menu"
+   Replaces Font Awesome hamburger only.
+   ====================================================== */
+.qodef-mobile-header
+.qodef-mobile-menu-opener
+i {
+  transform: translate(0px, 3px);
+}
+.qodef-mobile-header
+.qodef-mobile-menu-opener
+i::before {
+  content: "menu" !important;
+
+  font-family: "Material Symbols Outlined" !important;
+  font-weight: normal !important;
+  font-style: normal !important;
+  font-size: inherit !important;
+  line-height: 1 !important;
+
+  letter-spacing: normal !important;
+  text-transform: none !important;
+
+  display: block;
+
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
 	/* Dropdown hangs off the bar and scrolls if it outgrows the screen.
 	   It keeps a solid background or it would be unreadable over photos. */
 	.qodef-mobile-header .qodef-mobile-nav {
@@ -1057,18 +1158,19 @@ End of video intro
 		align-items: center !important;
 		text-decoration: none !important;
 	}
+     /* Her name - desktop */
 	.qodef-page-header .qodef-logo-wrapper a::after {
 		content: "Viola Yeşiltaç";
 		font-size: var(--desktop-name-size);
 		letter-spacing: 0.18em;
 		text-transform: uppercase;
-		font-weight: 600;
+		font-weight: 500;
 		color: #0e0e0e;
 		white-space: nowrap;
 		line-height: 1;
-		transform: translateY(-3px);      /* baseline match — see note */
+		transform: translateY(-1px);      /* baseline match — see note */
 	}
-	:root { --desktop-name-size: 1.2rem; }
+	:root { --desktop-name-size: 1.125rem; }
 }
 @media (max-width: 480px) {
 	:root {
@@ -1117,13 +1219,15 @@ End of video intro
 	text-decoration: none !important;
 }
 
+/* Her Name - Mobile */
 .qodef-mobile-header .qodef-mobile-logo-wrapper a::after {
 	content: "Viola Yeşiltaç";
 	display: inline-block;
-	font-size: 15px;
+	font-size: 1.125rem;
+    /* font-size: 15px; */
 	letter-spacing: 0.18em;
 	text-transform: uppercase;
-	font-weight: 600;
+	font-weight: 500;
 	color: #0e0e0e;
 	white-space: nowrap;
 }
@@ -1526,4 +1630,51 @@ html { scrollbar-gutter: stable; }
 body.fbx-active .qodef-mobile-header,
 body.fbx-active .qodef-page-header {
 	display: none !important;
+}
+
+/* ======================================================
+   MOBILE PROJECT LINKS
+   No underline, no hover/tap highlight
+   ====================================================== */
+
+@media (max-width: 850px) {
+
+  body .qodef-content .exhibition .venue a,
+  body .qodef-content .exhibition .doc a,
+  body .qodef-content .exhibition .venue a:link,
+  body .qodef-content .exhibition .doc a:link,
+  body .qodef-content .exhibition .venue a:visited,
+  body .qodef-content .exhibition .doc a:visited,
+  body .qodef-content .exhibition .venue a:hover,
+  body .qodef-content .exhibition .doc a:hover,
+  body .qodef-content .exhibition .venue a:focus,
+  body .qodef-content .exhibition .doc a:focus,
+  body .qodef-content .exhibition .venue a:active,
+  body .qodef-content .exhibition .doc a:active {
+
+    text-decoration: none !important;
+    -webkit-text-decoration: none !important;
+
+    text-decoration-line: none !important;
+    text-decoration-color: transparent !important;
+
+    border: 0 !important;
+    border-bottom: 0 !important;
+
+    box-shadow: none !important;
+
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+
+    -webkit-tap-highlight-color: transparent;
+  }
+
+}
+/* Remove iOS/WebKit tap flash from project links */
+@media (max-width: 768px) {
+  .exhibition .venue a,
+  .exhibition .doc a {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
+  }
 }
