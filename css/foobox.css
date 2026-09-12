@@ -1,0 +1,645 @@
+/* ==================================================
+   FOOBOX — CUSTOM LIGHTBOX
+   ==================================================
+   VERSION: 2026-09-11-a-unified
+
+   Light "gallery" treatment, modelled on the Eggleston
+   reference: a near-white ground, the picture floating
+   on it, and a caption block underneath reading
+
+       Vom rudimentären Unverständnis, 2012   ← italic
+                                                title,
+                                                roman year
+       Calligraphy ink on acid free paper     ← grey
+       65 x 50 cm, 25.5 x 19.5 inches         ← grey
+
+   ONE RENDERER, BOTH BREAKPOINTS
+   ------------------------------
+   FooBox's stage stays fully alive but INVISIBLE at
+   every width — it keeps navigation, swipe, keyboard,
+   preloading and close — and the photograph is drawn in
+   .vy-viewer, a position:fixed; inset:0 layer laid out
+   against the VISIBLE viewport. No vh. No svh. No
+   visualViewport.
+
+   The markup the JS builds:
+
+       .vy-viewer                fixed, inset 0, click-through
+         .vy-stack               the available box (insets only)
+           .vy-layer   x2        absolutely stacked, one visible
+             .vy-frame           width == the picture's width
+               img.vy-photo      width:100% of the frame
+               .vy-caption       width:100% of the frame
+
+   Because the caption is a child of the frame at
+   width:100%, it is exactly the photograph's width by
+   construction — it can never overhang, and there is
+   nothing for the JS to align. The desktop
+   .fbx-caption rules and the whole --vy-reserve
+   alignment apparatus are gone with it.
+
+   The JS writes only three values into the CSS:
+       --vy-reserve   the caption card's max-height
+       --vy-band      the photograph's max-height, and on
+                      desktop the arrows' centre
+       .vy-frame { width }   per slide
+
+   On DESKTOP those two are constant for the whole
+   gallery at a given width, which is what stops caption
+   length from resizing the photograph between slides. On
+   MOBILE the caption is fitted per picture instead — a
+   constant band costs 37% of a phone screen and buys
+   almost nothing there, since the picture is
+   width-limited nearly every time. That is the one
+   deliberate breakpoint branch; the JS documents the
+   measurements behind it.
+
+   .vy-viewer's z-index MUST stay above .fbx-inner
+   (100002) or FooBox's invisible-but-hit-testable stage
+   swallows every tap meant for the caption.
+
+   DO NOT hide or restyle .fbx-inner-spacer. FooBox's
+   getMaxSize() measures that element's padding to size
+   every picture:
+       o = element.find(".fbx-inner-spacer")
+       t = parseInt(o.css("padding-top"), 0) ...
+   Hiding it collapses the computed size and no image is
+   laid out at all.
+
+   NOTE ON !important
+   ------------------
+   It is used ONLY where we are overriding FooBox,
+   FooGallery or the Kloe theme — i.e. on .fbx-* and
+   .fg-* selectors. Our own .vy-* elements have no
+   competing rules, so they are written plainly. If
+   something in the theme ever does reach them, add
+   !important there and nowhere else.
+   ================================================== */
+
+
+/* ==================================================
+   TOKENS — the whole palette lives here
+   ==================================================
+   On :root, not .fbx-modal: the grid thumbnails' hover
+   caption is outside the modal and uses the same
+   palette. Layout tokens are set per breakpoint, on
+   .fbx-modal, further down.
+   ================================================== */
+:root {
+  /* THE KNOBS FOR HOW MUCH SHOWS THROUGH.
+     Raise the alpha for a more solid white, lower it to
+     let more of the grid read behind.
+
+       --vy-ground           the full-screen wash
+       --vy-panel            the mobile nav bar
+       --vy-caption-mobile   the caption card, mobile
+       --vy-caption-desktop  the caption card, desktop
+
+     The last three sit ON TOP of the ground, so what you
+     see through them is the product of both. The two
+     caption whites are deliberately different values —
+     do not merge them into one token. */
+  --vy-ground:           rgba(255, 255, 255, 0.85);
+  --vy-panel:            rgba(255, 255, 255, 0.91);
+  --vy-caption-mobile:   rgba(255, 255, 255, 0.93);
+  --vy-caption-desktop:  rgba(255, 255, 255, 0.91);
+
+  --vy-ink:       #14110f;                   /* title          */
+  --vy-ink-soft:  #6e6a66;                   /* material/size  */
+  --vy-arrow:     rgba(0, 0, 0, 0.82);
+
+  --vy-size:      1rem;                      /* 16px           */
+  --vy-leading:   1.45;
+  --vy-title-gap: 0.85em;   /* space under the title block */
+}
+
+
+/* ==================================================
+   THE CAPTION BLOCK
+   ==================================================
+   ONE definition, shared by the lightbox and the grid
+   thumbnails' hover caption — they are composed from
+   the same anchor by the same code, so they must be
+   typeset by the same rules.
+
+   Italics come from the <em> the JS inserts around the
+   title, so the year stays roman. Containers must
+   therefore be font-style: normal.
+   ================================================== */
+body .vy-cap-title,
+body .vy-cap-detail {
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: var(--vy-size) !important;
+  line-height: var(--vy-leading) !important;
+  font-weight: 400 !important;
+  font-style: normal !important;
+  text-align: left !important;
+  overflow-wrap: break-word !important;
+}
+
+body .vy-cap-title {
+  color: var(--vy-ink) !important;
+}
+body .vy-cap-title em {
+  font-style: italic !important;
+}
+
+body .vy-cap-detail {
+  margin-top: var(--vy-title-gap) !important;
+  color: var(--vy-ink-soft) !important;
+  white-space: pre-line !important;   /* keeps her line breaks */
+}
+
+/* Untitled work: the detail IS the caption, so there is no
+   title above it to be spaced away from. */
+body .vy-cap-detail:first-child {
+  margin-top: 0 !important;
+}
+
+
+/* ==================================================
+   THE GRID THUMBNAILS' HOVER CAPTION
+   ==================================================
+   FooGallery drops the entire caption field into one
+   .fg-caption-title div. Her line breaks survive into it
+   as real \n characters, but the div is
+   white-space: normal, so title, material and size run
+   together on one line — and the colour is FooGallery's
+   own #333 from the fg-light preset, not --vy-ink.
+
+   The JS replaces its contents with the same .vy-cap-*
+   markup the lightbox uses; these two rules just stop
+   FooGallery's own type winning.
+   ================================================== */
+body .foogallery .fg-caption-title {
+  font-style: normal !important;
+}
+
+/* FOOGALLERY'S OWN CAPTION OUTPUT NEVER REACHES THE SCREEN.
+   Both nodes, both surfaces, hidden in CSS — which runs before
+   any script, so there is no flash and no dependency on JS
+   timing. The two fields still travel to the page as
+   data-caption-title / data-caption-desc on the anchor; the JS
+   reads those and renders its own markup. FooGallery holds the
+   content, we hold every decision about how it looks. Hidden
+   rather than removed so FooBox's own machinery stays untouched.
+
+   This is what makes it safe to leave showCaptionDescription ON,
+   which is what stops the description being folded into the
+   caption attribute. */
+body .foogallery .fg-caption-desc {
+  display: none !important;
+}
+
+
+/* ==================================================
+   ==================================================
+   FOOBOX'S MACHINERY — ALIVE, INVISIBLE
+   ==================================================
+   At BOTH breakpoints now.
+
+   .vy-ready is added by the JS only once the viewer has
+   been built. If the JS ever fails, FooBox renders
+   normally rather than the visitor getting a blank
+   screen.
+
+   opacity, never display:none — the stage must keep
+   receiving swipes and keep navigating.
+   ================================================== */
+body .fbx-modal {
+  background: var(--vy-ground) !important;
+}
+
+body .fbx-modal.vy-ready .fbx-stage {
+  opacity: 0 !important;
+  pointer-events: auto !important;
+}
+
+/* .fbx-inner is NOT inside .fbx-stage, so its own theme chrome
+   would still paint. Neutralise it — but never .fbx-inner-spacer. */
+body .fbx-modal.vy-ready .fbx-inner,
+body .fbx-modal.vy-ready .fbx-stage,
+body .fbx-modal.vy-ready .fbx-item-current,
+body .fbx-modal.vy-ready .fbx-item-next,
+body .fbx-modal.vy-ready .fbx-item-prev {
+  background: transparent !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Native chrome we never show. .fbx-close stays in the DOM:
+   display:none still accepts a programmatic .click(), which is
+   how close-on-tap works on mobile. */
+body .fbx-modal .fbx-caption,
+body .fbx-modal .fbx-caption-desc,
+body .fbx-modal button.fbx-close,
+body .fbx-modal .fbx-close-caption,
+body .fbx-modal .fbx-open-caption,
+body .fbx-modal .fbx-count,
+body .fbx-modal .fbx-loader {
+  display: none !important;
+}
+body .fbx-modal .fbx-btn-shadow {
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+
+/* ==================================================
+   ==================================================
+   OUR LAYER
+   ==================================================
+   THE Z-INDEX IS LOAD-BEARING. Measured live:
+       .fbx-inner  z-index: 100002
+   Both are positioned children of .fbx-modal, so at a
+   lower value FooBox's stage paints on top of the
+   caption. The stage is opacity:0 but still
+   hit-testable — it carries the swipe — so every tap
+   meant for the caption landed on img.fbx-item-image.
+
+   Regression test: document.elementFromPoint at the
+   caption's centre must return .vy-caption, never
+   .fbx-item-image. Keep this above 100002.
+
+   pointer-events: none so swipes fall through to
+   FooBox; only the visible layer's caption takes them
+   back.
+   ================================================== */
+body .fbx-modal .vy-viewer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+  z-index: 100010;
+}
+
+/* THE AVAILABLE BOX. The insets remove the gutters, the mobile
+   nav strip and the safe areas, so stack.clientWidth and
+   stack.clientHeight ARE the space the picture may use. This is
+   the single place that geometry is authored. */
+body .fbx-modal .vy-stack {
+  position: absolute;
+  left: var(--vy-gutter);
+  right: var(--vy-gutter);
+  top: calc(var(--vy-pad-top) + env(safe-area-inset-top));
+  bottom: calc(
+    var(--vy-nav-h) + var(--vy-pad-bottom) + env(safe-area-inset-bottom)
+  );
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+/* TWO LAYERS, ONE VISIBLE. The incoming slide is decoded,
+   captioned and sized while it is still at opacity 0; the swap
+   is then a single class change. That is the whole flash fix:
+   there is never a frame without a fully painted picture.
+
+   No transition here on purpose. Dissolving two stacked images
+   means neither is fully opaque mid-dissolve, so the translucent
+   ground would let the page show through — which is the artefact
+   being removed. */
+body .fbx-modal .vy-layer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+}
+body .fbx-modal .vy-layer.is-active {
+  opacity: 1;
+}
+body .fbx-modal .vy-layer.is-active .vy-caption {
+  pointer-events: auto;
+}
+
+/* The frame carries the width, and everything inside it is
+   width:100% — so the caption is exactly the photograph's width
+   and can never overhang it. The JS sets this width and nothing
+   else per slide. */
+body .fbx-modal .vy-frame {
+  display: flex;
+  flex-direction: column;
+  gap: var(--vy-gap);
+  max-width: 100%;
+  max-height: 100%;
+}
+
+body .fbx-modal .vy-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: var(--vy-band);
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  box-shadow: none;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* THE CAPTION CARD.
+   --vy-reserve is the gallery's ONE caption height budget,
+   measured once by the JS across every caption on the page. A
+   caption longer than that scrolls inside the card rather than
+   stealing the photograph's height. */
+body .fbx-modal .vy-caption {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: var(--vy-cap-pad);
+  background: var(--vy-caption-bg);
+  max-height: var(--vy-reserve);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  border: 0;
+  outline: 0;
+  box-shadow: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: background-color 160ms ease;
+}
+
+body .fbx-modal .vy-caption .vy-cap-title,
+body .fbx-modal .vy-caption .vy-cap-detail {
+  transition: opacity 160ms ease;
+}
+
+/* Switched off by the reader: the card KEEPS its size, so the
+   photograph does not move and the same area stays tappable to
+   bring it back. Only the ink and the panel go. */
+body .fbx-modal .vy-caption.vy-cap-hidden {
+  background: transparent;
+}
+body .fbx-modal .vy-caption.vy-cap-hidden .vy-cap-title,
+body .fbx-modal .vy-caption.vy-cap-hidden .vy-cap-detail {
+  opacity: 0;
+}
+
+/* No caption for this picture: no empty card. The gallery's
+   reserve still stands, so the photograph is the same size here
+   as on every captioned slide. */
+body .fbx-modal .vy-caption.vy-cap-empty {
+  display: none;
+}
+
+/* The offscreen probe the JS measures the gallery's reserve in.
+   Its children are real .vy-caption nodes so the padding and
+   typography are included for free — they just must not be
+   clamped by the reserve they are being used to calculate. */
+body .fbx-modal .vy-probe {
+  position: absolute;
+  left: -99999px;
+  top: 0;
+  height: auto;
+  visibility: hidden;
+  pointer-events: none;
+}
+body .fbx-modal .vy-probe .vy-caption {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: none;
+  overflow: visible;
+}
+
+
+/* ==================================================
+   ==================================================
+   DESKTOP — 1000px AND ABOVE
+   ==================================================
+   ================================================== */
+@media screen and (min-width: 1000px) {
+
+  body .fbx-modal {
+    --vy-nav-h:      0px;
+    --vy-arrow-x:    4rem;
+    --vy-gutter:     7rem;    /* leaves the chevrons their room */
+    --vy-pad-top:    2.5rem;
+    --vy-pad-bottom: 2.5rem;
+    --vy-gap:        0px;     /* caption flush under the photo  */
+    --vy-cap-pad:    0.875rem 1.25rem 1rem;
+    --vy-caption-bg: var(--vy-caption-desktop);
+
+    /* First-frame fallbacks. The JS overwrites both as soon as
+       the first slide is laid out, while the layer is still
+       invisible. */
+    --vy-reserve:    none;
+    --vy-band:       60vh;
+  }
+
+  body .fbx-modal .fbx-inner {
+    border-radius: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* THE BUTTON IS THE HIT TARGET; THE ::before IS ONLY THE
+     DRAWING. They have to share a centre. Before this was fixed,
+     the button sat at 50% of the stage while the chevron was
+     drawn 45px higher — so the visible arrow was outside the
+     clickable box, and a near miss landed on the overlay and
+     closed the lightbox.
+
+     Both are now centred on the middle of --vy-band, the
+     picture's height budget, which is constant for the gallery.
+     position: fixed resolves against .fbx-modal (it carries a
+     transform), so the arrows are independent of .fbx-inner's
+     box entirely. */
+  body .fbx-modal button.fbx-prev,
+  body .fbx-modal button.fbx-next {
+    position: fixed !important;
+    top: calc(var(--vy-pad-top) + var(--vy-band) / 2) !important;
+    bottom: auto !important;
+    width: 6rem !important;
+    height: 10.5rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+    z-index: 100012 !important;
+  }
+  body .fbx-modal button.fbx-prev {
+    left: var(--vy-arrow-x) !important;
+    right: auto !important;
+    transform: translate(-50%, -50%) !important;
+  }
+  body .fbx-modal button.fbx-next {
+    right: var(--vy-arrow-x) !important;
+    left: auto !important;
+    transform: translate(50%, -50%) !important;
+  }
+
+  /* Thin chevrons, dark on the light ground. */
+  body .fbx-modal button.fbx-prev .fbx-icon,
+  body .fbx-modal button.fbx-next .fbx-icon,
+  body .fbx-modal .fbx-prev svg,
+  body .fbx-modal .fbx-next svg {
+    display: none !important;
+  }
+  body .fbx-modal button.fbx-prev::before,
+  body .fbx-modal button.fbx-next::before {
+    content: "" !important;
+    display: block !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 1.0625rem !important;
+    height: 1.0625rem !important;
+    margin: 0 !important;
+    border-top: 2.5px solid var(--vy-arrow) !important;
+    border-left: 2.5px solid var(--vy-arrow) !important;
+  }
+  /* A square with two borders, once rotated, carries its ink to
+     one side of its own bounding box — dead centre would look
+     off centre. Hence the 15%-of-width optical correction. */
+  body .fbx-modal button.fbx-prev::before {
+    transform: translate(-35%, -50%) rotate(-45deg) !important;
+  }
+  body .fbx-modal button.fbx-next::before {
+    transform: translate(-65%, -50%) rotate(135deg) !important;
+  }
+}
+
+
+/* ==================================================
+   ==================================================
+   MOBILE — BELOW 1000px
+   ==================================================
+   ================================================== */
+@media screen and (max-width: 999px) {
+
+  body .fbx-modal {
+    --vy-nav-h:      3.5rem;   /* Safari */
+    --vy-gutter:     5%;
+    --vy-pad-top:    0.875rem;
+    --vy-pad-bottom: 0.875rem;
+    --vy-gap:        0px;      /* caption flush under the photo */
+    --vy-cap-pad:    0.875rem 0.875rem 1rem;
+    --vy-caption-bg: var(--vy-caption-mobile);
+
+    --vy-reserve:    none;
+    --vy-band:       60vh;
+
+    /* Darker than the desktop chevrons. With the hairlines gone
+       the arrows are the only thing marking the bar, so they
+       carry it — this sits at the weight of Safari's own toolbar
+       glyphs directly beneath them. */
+    --vy-arrow: rgba(0, 0, 0, 0.88);
+  }
+  body .fbx-modal.fbx-mobile-firefox {
+    --vy-nav-h: 4.75rem;       /* Firefox chrome is taller */
+  }
+
+  /* THE MODAL — pinned to the visible viewport. FooBox centres
+     .fbx-inner in the LARGE viewport (toolbars retracted), so
+     mobile chrome paints over the top and bottom of it. The
+     problem is the centring CONTEXT, not the size, which is why
+     constraining the <img> could never fix it. */
+  body .fbx-modal {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    overscroll-behavior: contain;
+  }
+
+  /* ==================================================
+     NAVIGATION — NATIVE FOOBOX, PINNED, LIGHT
+     ================================================== */
+  body .fbx-modal button.fbx-prev,
+  body .fbx-modal button.fbx-next {
+    position: fixed !important;
+    top: auto !important;
+    bottom: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 50% !important;
+    height: calc(var(--vy-nav-h) + env(safe-area-inset-bottom)) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    padding-bottom: env(safe-area-inset-bottom) !important;
+    box-sizing: border-box !important;
+    transform: none !important;
+    background: var(--vy-panel) !important;
+    border: 0 !important;
+    outline: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+    z-index: 100012 !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+  body .fbx-modal button.fbx-prev {
+    left: 0 !important;
+    right: auto !important;
+  }
+  body .fbx-modal button.fbx-next {
+    right: 0 !important;
+    left: auto !important;
+  }
+
+  /* Same chevrons as the desktop, rather than FooBox's solid
+     arrowheads — these mirror the back/forward glyphs in
+     Safari's toolbar directly beneath them.
+
+     The desktop pair is absolutely positioned inside its hit
+     box; here the button is already a centring flex container,
+     so the chevron is a plain flex child and only needs the
+     optical nudge. */
+  body .fbx-modal .fbx-prev svg,
+  body .fbx-modal .fbx-next svg,
+  body .fbx-modal button.fbx-prev .fbx-icon,
+  body .fbx-modal button.fbx-next .fbx-icon {
+    display: none !important;
+  }
+  body .fbx-modal button.fbx-prev::before,
+  body .fbx-modal button.fbx-next::before {
+    content: "" !important;
+    display: block !important;
+    position: static !important;
+    width: 0.8125rem !important;
+    height: 0.8125rem !important;
+    margin: 0 !important;
+    border-top: 2px solid var(--vy-arrow) !important;
+    border-left: 2px solid var(--vy-arrow) !important;
+  }
+  body .fbx-modal button.fbx-prev::before {
+    transform: translateX(2px) rotate(-45deg) !important;
+  }
+  body .fbx-modal button.fbx-next::before {
+    transform: translateX(-2px) rotate(135deg) !important;
+  }
+}

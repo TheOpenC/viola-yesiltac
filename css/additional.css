@@ -884,65 +884,47 @@ End of video intro
 	.qodef-mobile-header { display: block !important; }
 }
 
-/* ========================================================
-   MOBILE NAME — MANUAL POSITION CONTROL
-   ====================================================== */
-
-@media (max-width: 768px) {
-
-  :root {
-    --mobile-name-x: var(--gutter);
-    --mobile-name-y: 0px;
-  }
-
-  /* Disable Kloe's built-in centered-logo positioning */
-  .qodef-mobile-header .qodef-position-center,
-  .qodef-mobile-header .qodef-position-center-inner {
-    position: static !important;
-    width: auto !important;
-    height: auto !important;
-    transform: none !important;
-  }
-
-  .qodef-mobile-header .qodef-grid {
-    position: relative !important;
-  }
-
-  /* Viola's name */
-  .qodef-mobile-header .qodef-mobile-logo-wrapper {
-    position: absolute !important;
-
-    left: var(--mobile-name-x) !important;
-    right: auto !important;
-
-    top: calc(50% + var(--mobile-name-y)) !important;
-    transform: translateY(-50%) !important;
-
-    width: auto !important;
-    margin: 0 !important;
-    padding: 0 !important;
-
-    text-align: left !important;
-    z-index: 3 !important;
-    pointer-events: auto !important;
-  }
-
-  .qodef-mobile-header .qodef-mobile-logo-wrapper a {
-    display: inline-block !important;
-    height: auto !important;
-    line-height: 1 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
-}
 /* ============================================================
-   MOBILE BAR — fixed, transparent, floats above the content
+   MOBILE HEADER — SIMPLE LEFT / RIGHT FLEX LAYOUT
+   ============================================================
+   Mobile only. The desktop header/nav below is untouched.
+
+   Kloe outputs the mobile logo inside .qodef-position-center,
+   but that class name is just the theme's markup. On mobile we
+   neutralize Kloe's centered/absolute positioning and let one
+   flex row handle the geometry:
+
+       Viola's name  ← left content gutter
+       hamburger     → right content gutter
+
+   The visual glyphs can then be nudged independently WITHOUT
+   changing the row geometry or the tap targets.
    ============================================================ */
 @media (max-width: 768px) {
-	/* Out of flow entirely. The bar no longer reserves 100px at the top
-	   of every page, so content starts at 0 and the h1 padding below is
-	   the single thing controlling top spacing. */
+
+	:root {
+		/* Element sizes */
+		--mobile-name-size: 1.125rem;
+		--hamburger-size: 2rem;
+
+		/* Optical fine tuning only — does not change layout */
+		--mobile-name-x: 0px;
+		--mobile-name-y: -1px;
+		--hamburger-x: 0px;
+		--hamburger-y: 3px;
+
+		/* Existing mobile page spacing */
+		--gutter: 1.5rem;
+		--h1-gap-above: 3rem;
+		--h1-space: calc(
+			var(--mobile-bar-top) + (var(--mobile-bar-h) / 2)
+			+ 0.47rem + var(--h1-gap-above)
+		);
+	}
+
+	/* ------------------------------------------------------
+	   OUTER MOBILE BAR
+	   ------------------------------------------------------ */
 	.qodef-mobile-header {
 		position: fixed !important;
 		top: var(--mobile-bar-top) !important;
@@ -952,38 +934,38 @@ End of video intro
 		height: var(--mobile-bar-h) !important;
 		background: transparent !important;
 		z-index: 9999 !important;
-		/* The bar spans the full width but is mostly empty. Without this,
-		   that empty strip would swallow every click on the content
-		   underneath it. Interaction is handed back to the icon and the
-		   menu only, just below. */
 		pointer-events: none !important;
 	}
 
-
 	.qodef-mobile-header .qodef-mobile-menu-opener,
+	.qodef-mobile-header .qodef-mobile-logo-wrapper,
 	.qodef-mobile-header .qodef-mobile-nav {
 		pointer-events: auto !important;
 	}
-	/* Kill every inherited white background on the wrappers.
-	   (The dropdown keeps its own background — see .qodef-mobile-nav.) */
+
+	/* Kill inherited theme backgrounds on the header wrappers. */
 	.qodef-mobile-header,
 	.qodef-mobile-header .qodef-mobile-header-inner,
+	.qodef-mobile-header .qodef-mobile-header-holder,
 	.qodef-mobile-header .qodef-vertical-align-containers,
 	.qodef-mobile-header .qodef-grid,
-	.qodef-mobile-header .qodef-position-left,
+	.qodef-mobile-header .qodef-position-center,
 	.qodef-mobile-header .qodef-position-right {
 		background: transparent !important;
 		box-shadow: none !important;
 		border: 0 !important;
 	}
+
 	.qodef-mobile-header .qodef-mobile-header-inner,
+	.qodef-mobile-header .qodef-mobile-header-holder,
+	.qodef-mobile-header .qodef-grid,
 	.qodef-mobile-header .qodef-vertical-align-containers {
 		height: var(--mobile-bar-h) !important;
 	}
-	/* Same column + gutter as the content, so the icon lands exactly on
-	   the content's right edge. Gutter goes on .qodef-grid ONLY —
-	   adding it to .qodef-vertical-align-containers too double-pads it. */
+
+	/* The grid supplies the SAME left/right gutter as page content. */
 	.qodef-mobile-header .qodef-grid {
+		position: relative !important;
 		width: 100% !important;
 		max-width: var(--content-max) !important;
 		margin: 0 auto !important;
@@ -991,79 +973,160 @@ End of video intro
 		padding-right: var(--gutter) !important;
 		box-sizing: border-box !important;
 	}
+
+	/* ------------------------------------------------------
+	   ONE NORMAL ROW FOR BOTH HEADER ELEMENTS
+	   ------------------------------------------------------
+	   The hamburger comes first in Kloe's HTML, so order puts
+	   the logo first visually. align-items:center establishes
+	   one shared row; the four x/y vars above do the optical
+	   baseline correction independently afterward.
+	   ------------------------------------------------------ */
 	.qodef-mobile-header .qodef-vertical-align-containers {
-		padding-left: 0 !important;
-		padding-right: 0 !important;
-	}
-	.qodef-mobile-menu-opener {
-		float: right !important;
-		margin: 0 !important;
+		position: relative !important;
+		display: flex !important;
+		align-items: center !important;
+		width: 100% !important;
 		padding: 0 !important;
 	}
+
+	/* Kloe calls this position-center, but on mobile it is simply
+	   the LEFT flex item. No absolute positioning and no centering. */
+	.qodef-mobile-header .qodef-position-center {
+		order: 1 !important;
+		position: static !important;
+		left: auto !important;
+		right: auto !important;
+		top: auto !important;
+		bottom: auto !important;
+		display: flex !important;
+		align-items: center !important;
+		width: auto !important;
+		height: auto !important;
+		margin: 0 !important;
+		padding: 0 !important;
+		text-align: left !important;
+		transform: none !important;
+	}
+
+	.qodef-mobile-header .qodef-position-center-inner {
+		position: static !important;
+		display: flex !important;
+		align-items: center !important;
+		width: auto !important;
+		height: auto !important;
+		margin: 0 !important;
+		padding: 0 !important;
+		vertical-align: baseline !important;
+		transform: none !important;
+	}
+
+	/* ------------------------------------------------------
+	   VIOLA'S NAME — LEFT
+	   ------------------------------------------------------ */
+	.qodef-mobile-header .qodef-mobile-logo-wrapper {
+		position: relative !important;
+		width: auto !important;
+		height: auto !important;
+		margin: 0 !important;
+		padding: 0 !important;
+		text-align: left !important;
+		z-index: 3 !important;
+	}
+
+	.qodef-mobile-header .qodef-mobile-logo-wrapper picture,
+	.qodef-mobile-header .qodef-mobile-logo-wrapper img {
+		display: none !important;
+	}
+
+	.qodef-mobile-header .qodef-mobile-logo-wrapper a {
+		display: flex !important;
+		align-items: center !important;
+		width: auto !important;
+		height: auto !important; /* overrides Kloe's inline height:1000px */
+		margin: 0 !important;
+		padding: 0 !important;
+		line-height: 1 !important;
+		text-decoration: none !important;
+	}
+
+	.qodef-mobile-header .qodef-mobile-logo-wrapper a::after {
+		content: "Viola Yeşiltaç";
+		display: inline-block;
+		font-size: var(--mobile-name-size) !important;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		font-weight: 500;
+		color: #0e0e0e;
+		white-space: nowrap;
+		line-height: 1;
+		transform: translate(var(--mobile-name-x), var(--mobile-name-y));
+	}
+
+	/* ------------------------------------------------------
+	   HAMBURGER — RIGHT
+	   ------------------------------------------------------ */
+	.qodef-mobile-header .qodef-mobile-menu-opener {
+		order: 2 !important;
+		position: relative !important;
+		float: none !important;
+		margin: 0 0 0 auto !important;
+		padding: 0 !important;
+		z-index: 3 !important;
+	}
+
 	.qodef-mobile-header .qodef-mobile-menu-opener a {
-		margin: 0 !important;
-		padding: 0 !important;
-		height: var(--mobile-bar-h) !important;
-		min-width: 2.75rem !important;
 		display: flex !important;
 		align-items: center !important;
 		justify-content: flex-end !important;
+		height: var(--mobile-bar-h) !important;
+		min-width: 2.75rem !important;
+		margin: 0 !important;
+		padding: 0 !important;
+		font-size: var(--hamburger-size) !important;
+		line-height: 1 !important;
 	}
-	/* THE ONE NUMBER CONTROLLING THE HAMBURGER'S SIZE.
-	   History: theme default 2rem → 3rem (the 1.5x) → 1.25rem.
-	   Measured live at 3rem it rendered 48px square, which read as
-	   far too heavy against 13px nav type.
 
-	   The opener is float:right and the link is justify-content:
-	   flex-end, so the glyph grows and shrinks LEFTWARDS — its right
-	   edge, and therefore your gutter, never moves.
-
-	   NOTE: the glyph shrinks but the TAP TARGET does not. The link
-	   keeps min-width 2.75rem (44px, Apple's minimum) and the full
-	   bar height, so a small icon is still easy to hit. Do not put
-	   the font-size on the link alone or the two would move together. */
-	.qodef-mobile-header { --hamburger-size: 2rem; }
-	.qodef-mobile-header .qodef-mobile-menu-opener a,
 	.qodef-mobile-header .qodef-mobile-menu-opener .qodef-mobile-opener-icon-holder,
 	.qodef-mobile-header .qodef-mobile-menu-opener i {
 		font-size: var(--hamburger-size) !important;
 		line-height: 1 !important;
 	}
 
-    /* ======================================================
-   MOBILE MENU ICON — MATERIAL SYMBOLS "menu"
-   Replaces Font Awesome hamburger only.
-   ====================================================== */
-.qodef-mobile-header
-.qodef-mobile-menu-opener
-i {
-  transform: translate(0px, 3px);
-}
-.qodef-mobile-header
-.qodef-mobile-menu-opener
-i::before {
-  content: "menu" !important;
+	/* Fine tuning moves only the visible icon inside its unchanged
+	   tap target, so alignment to the right gutter never reflows. */
+	.qodef-mobile-header .qodef-mobile-menu-opener .qodef-mobile-opener-icon-holder {
+		transform: translate(var(--hamburger-x), var(--hamburger-y));
+	}
 
-  font-family: "Material Symbols Outlined" !important;
-  font-weight: normal !important;
-  font-style: normal !important;
-  font-size: inherit !important;
-  line-height: 1 !important;
+	.qodef-mobile-header .qodef-mobile-menu-opener i {
+		transform: none !important;
+	}
 
-  letter-spacing: normal !important;
-  text-transform: none !important;
+	.qodef-mobile-header .qodef-mobile-menu-opener i::before {
+		content: "menu" !important;
+		font-family: "Material Symbols Outlined" !important;
+		font-weight: normal !important;
+		font-style: normal !important;
+		font-size: inherit !important;
+		line-height: 1 !important;
+		letter-spacing: normal !important;
+		text-transform: none !important;
+		display: block;
+		font-variation-settings:
+			"FILL" 0,
+			"wght" 400,
+			"GRAD" 0,
+			"opsz" 24;
+	}
 
-  display: block;
+	/* Kloe outputs this wrapper on mobile, but it is empty here. */
+	.qodef-mobile-header .qodef-position-right {
+		display: none !important;
+	}
 
-  font-variation-settings:
-    "FILL" 0,
-    "wght" 400,
-    "GRAD" 0,
-    "opsz" 24;
-}
-
-	/* Dropdown hangs off the bar and scrolls if it outgrows the screen.
-	   It keeps a solid background or it would be unreadable over photos. */
+	/* This is superseded later by the full-screen menu rules when open,
+	   but keeps Kloe's closed-state dropdown geometry sane. */
 	.qodef-mobile-header .qodef-mobile-nav {
 		position: absolute !important;
 		top: var(--mobile-bar-h) !important;
@@ -1071,34 +1134,6 @@ i::before {
 		right: 0 !important;
 		max-height: calc(100vh - var(--mobile-bar-h) - var(--mobile-bar-top)) !important;
 		overflow-y: auto !important;
-	}
-	/* Clearance for the floating bar, measured from HER NAME rather than
-	   from the bar's box.
-
-	   This is the correction. The name is vertically centred in the bar
-	   via line-height, so with a 5rem bar there is ~1.9rem of empty bar
-	   sitting below the text. Adding the FULL bar height therefore
-	   overshot: you asked for 2rem and the eye saw nearly 4rem.
-
-	   Measured live: bar 32→112px, name text 64.5→79.5px. So the gap the
-	   reader sees starts at the bar's midpoint plus half a line, not at
-	   the bar's bottom edge:
-
-	       top offset + half the bar + half a line + the gap you want
-
-	   Works out to 7rem here and 6.25rem at ≤480px, and re-derives itself
-	   if the bar height ever changes. --h1-gap-above is the only knob. */
-	:root {
-		--h1-gap-above: 3rem;
-		--h1-space: calc(
-			var(--mobile-bar-top) + (var(--mobile-bar-h) / 2)
-			+ 0.47rem + var(--h1-gap-above)
-		);
-	}
-}
-@media (max-width: 768px){
-	:root{
-		--gutter: 1.5rem
 	}
 }
 
@@ -1191,56 +1226,13 @@ i::before {
 
 
 /* ======================================================
-   NEW — MOBILE LOGO → HER NAME
+   MOBILE LOGO / NAME
    ======================================================
-   The mobile logo is a BROKEN IMAGE, which is why it shows
-   as an empty box reading "mobile logo". Its source is
-
-       http://violayesiltac.com/.../ViolaNeu.png
-
-   on an https page, so the browser blocks it as mixed
-   content and falls back to the alt text. (naturalWidth
-   reports 0, which confirms it.) The theme also puts an
-   inline height:1000px on the link — that is where the
-   oversized box comes from.
-
-   Rather than fix the PNG, this sets her name as text,
-   which stays sharp at any pixel density.
+   Mobile logo replacement and all of its positioning now live
+   in the MOBILE HEADER block above. Keeping it in one place avoids
+   a later selector silently reintroducing Kloe's line-height or
+   centered-logo geometry.
    ====================================================== */
-.qodef-mobile-header .qodef-mobile-logo-wrapper picture,
-.qodef-mobile-header .qodef-mobile-logo-wrapper img {
-	display: none !important;
-}
-
-.qodef-mobile-header .qodef-mobile-logo-wrapper a {
-	height: auto !important;                  /* kills the inline 1000px */
-	display: inline-block !important;
-	line-height: var(--mobile-bar-h) !important;   /* centres in your bar */
-	text-decoration: none !important;
-}
-
-/* Her Name - Mobile */
-.qodef-mobile-header .qodef-mobile-logo-wrapper a::after {
-	content: "Viola Yeşiltaç";
-	display: inline-block;
-	font-size: 1.125rem;
-    /* font-size: 15px; */
-	letter-spacing: 0.18em;
-	text-transform: uppercase;
-	font-weight: 500;
-	color: #0e0e0e;
-	white-space: nowrap;
-}
-
-/* The bar is pointer-events:none so its empty width does not swallow
-   clicks on the content beneath. That also makes the name unclickable,
-   so interaction is handed back here — the same way the icon and the
-   dropdown get it above. Delete this rule if you would rather the name
-   were inert. */
-.qodef-mobile-header .qodef-mobile-logo-wrapper {
-	pointer-events: auto !important;
-}
-
 
 /* ======================================================
    NEW — NAV STAYS BLACK, NEVER PINK
